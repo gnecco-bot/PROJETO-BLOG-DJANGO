@@ -10,7 +10,3 @@ def random_letters(k=5):
 
 def slugify_new(text, k=5):
     return slugify(text) + '-' + random_letters(k)
-
-print(slugify_new('teste'))
-print(slugify_new('teste'))
-print(slugify_new('teste'))
