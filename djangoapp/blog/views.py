@@ -1,6 +1,7 @@
-from django.core.paginator import Paginator
-from django.shortcuts import render
 from blog.models import Post
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.shortcuts import render
 
 PER_PAGE = 9
 
@@ -36,6 +37,39 @@ def created_by(request, author_pk):
 
 def category(request, slug):
     posts = Post.objects.get_published().filter(category__slug=slug) #type: ignore
+
+    paginator = Paginator(posts, PER_PAGE)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(
+        request,
+        'blog/pages/index.html',
+        {
+            'page_obj': page_obj,
+        }
+    )
+
+
+def tag(request, slug):
+    posts = Post.objects.get_published().filter(tag__slug=slug) #type: ignore
+
+    paginator = Paginator(posts, PER_PAGE)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(
+        request,
+        'blog/pages/index.html',
+        {
+            'page_obj': page_obj,
+        }
+    ) 
+
+
+def search(request):
+    search_value = '...'
+    posts = Post.objects.get_published().filter(title__icontains=se) #type: ignore
 
     paginator = Paginator(posts, PER_PAGE)
     page_number = request.GET.get("page")
