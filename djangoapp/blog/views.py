@@ -68,18 +68,16 @@ def tag(request, slug):
 
 
 def search(request):
-    search_value = '...'
-    posts = Post.objects.get_published().filter(title__icontains=se) #type: ignore
+    search_value = request.GET.get('search', '').strip()
 
-    paginator = Paginator(posts, PER_PAGE)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    posts = Post.objects.get_published().filter(Q(title__icontains=search_value) | Q(content__icontains=search_value) | Q(excerpt__icontains=search_value)) #type: ignore
 
     return render(
         request,
         'blog/pages/index.html',
         {
-            'page_obj': page_obj,
+            'page_obj': posts,
+            'search_value': search_value,
         }
     )
 
